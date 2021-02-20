@@ -19,7 +19,7 @@ contract Nomine is Ownable {
     event nomineRemoved(address indexed account);
     
     constructor() {
-        _owner = msg.sender();
+        _owner = msg.sender;
     }
     
     modifier isAlreadyNominee(address _address) {
@@ -65,8 +65,8 @@ contract Nomine is Ownable {
         return nomineAddress[_number];
     }
     
-    // function getNomineVote(address _address) external view returns(uint) {
-    //     return nomineVotes[_address];
-    // }
+    function getNomineArea(address _address) public view returns(string memory) {
+        return nomine.getArea(_address);
+    }
 
 }
