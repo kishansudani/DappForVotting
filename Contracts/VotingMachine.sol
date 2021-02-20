@@ -13,6 +13,7 @@ contract VotingMachine {
     
     Voter voter = new Voter();
     Nomine nomine = new Nomine();
+    address nomineAddress;
     
     mapping (address => bool) voted; // for checking if perosn alreadyVoted
     mapping (address => uint64) votes; // for checking number of votes
@@ -29,12 +30,24 @@ contract VotingMachine {
         _;
     }
     
-    function addVote(address _voterPersonAddress, uint128 _nomineeNumber) public  {
+    modifier isAreaMatch(address _voterPersonAddress, uint128 _nomineeNumber) {
+        string memory voterAdd = voter.getVoterArea(_voterPersonAddress);
+        string memory nomineAdd = nomine.getNomineArea(nomineAddress);
+        require(keccak256(abi.encodePacked(voterAdd)) == keccak256(abi.encodePacked(nomineAdd)));
+        _;
+    }
+    
+    function loadNomineAddress(uint128 _nomineeNumber) private {
+        nomineAddress = nomine.getNomineAddress(_nomineeNumber);
+    }
+    
+    
+    function addVote(address _voterPersonAddress, uint128 _nomineeNumber) public {
+        loadNomineAddress(_nomineeNumber);
         _addVote(_voterPersonAddress, _nomineeNumber);
     }
     
-    function _addVote(address _voterPersonAddress, uint128 _nomineeNumber) private  {
-        address nomineAddress = nomine.getNomineAddress(_nomineeNumber);
+    function _addVote(address _voterPersonAddress, uint128 _nomineeNumber) private isPersonVoter(_voterPersonAddress) alreadyVoted(_voterPersonAddress) isAreaMatch(_voterPersonAddress, _nomineeNumber) {
         votes[nomineAddress] += 1;
         voted[_voterPersonAddress] = true;
         emit doneVoting(_voterPersonAddress);
