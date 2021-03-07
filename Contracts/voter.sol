@@ -49,4 +49,8 @@ contract Voter is Ownable{
         voter.remove(_address);
         emit voterRemoved(_address);
     }
+    
+    function getVoterArea(address _address) public view returns(string memory) {
+        return voter.getArea(_address);
+    }
 }

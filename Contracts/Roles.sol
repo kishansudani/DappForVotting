@@ -32,4 +32,8 @@ library Roles {
         return role.bearer[account];
     }
     
+    function getArea(Role storage role, address account) internal view returns(string memory) {
+        return role.area[account];
+    }
+    
 }
